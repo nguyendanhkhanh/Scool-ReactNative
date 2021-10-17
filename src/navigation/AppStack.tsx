@@ -1,6 +1,10 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react'
+import ClassReportList from '../screen/ClassReportList';
 import HomeScreen from '../screen/HomeScreen';
+import MistakeCreate from '../screen/MistakeCreate';
+import MistakeDetail from '../screen/MistakeDetail';
+import ReportInfo from '../screen/ReportInfo';
 import BottomTab from './BottomTab';
 
 const AppStack = () => {
@@ -20,7 +24,10 @@ const AppStack = () => {
       screenOptions={{ gestureEnabled: false, headerShown: false }}>
       {_renderItemScreen('BottomTab', BottomTab)}
       {_renderItemScreen('HomeScreen', HomeScreen)}
-      {/* {_renderItemScreen('AppStack', AppStack)} */}
+      {_renderItemScreen('ReportInfo', ReportInfo)}
+      {_renderItemScreen('ClassReportList', ClassReportList)}
+      {_renderItemScreen('MistakeCreate', MistakeCreate)}
+      {_renderItemScreen('MistakeDetail', MistakeDetail)}
     </Stack.Navigator>
   )
 }

@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 import { SafeAreaView, StyleSheet } from 'react-native'
-import HeaderHome from '../component/HeaderHome'
+import HeaderHome from '../component/HeaderMain'
 
 const HomeScreen = () => {
   const navigation = useNavigation()

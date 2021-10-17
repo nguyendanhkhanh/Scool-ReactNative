@@ -1,5 +1,5 @@
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/reducer';
+import axios, { Axios } from 'axios';
+import { store } from '../redux/store/stote';
 import { configEnv } from './@config';
 import { configHttpRequest, configHttpResponse } from './@helper/network/interceptors';
 
@@ -12,12 +12,26 @@ export const getDefaultOAuthOptions = () => {
     'client_secret': '1q2w3e*',
   };
 };
+export const getApiService = async () => {
 
-// const token = useSelector((state: RootState) => state.auth.access_token)
-// export const header = {
-//   headers: {
-//     'Authorization': token
-//   }
-// }
+  // get token from store
+  const { 
+    auth: { token }
+  } = store.getState();
+
+  // TODO: auto get access_token when expired 
+
+  const axiosConfig = axios.create({
+    baseURL: baseUrl,
+    headers: { 'Content-Type': 'application/json' },
+    withCredentials: true,
+  });
+
+  // config axios interceptor;
+  configHttpRequest(axiosConfig);
+  configHttpResponse(axiosConfig);
+
+  return axiosConfig;
+};
 
 export const baseUrl = 'http://10.0.2.2:5000'

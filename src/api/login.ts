@@ -10,8 +10,13 @@ export const login = async (body: User.Login) => {
   params.append('scope', 'offline_access Scool')
   params.append('client_id', 'Scool_App')
   params.append('client_secret', '1q2w3e*')
- 
-  const url = `${baseUrl}/connect/token`
 
-  return axios.post(url, params)
+  const ins = axios.create({
+    baseURL: baseUrl,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  });
+ 
+  return ins.post('/connect/token', params)
 };

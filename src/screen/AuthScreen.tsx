@@ -1,13 +1,11 @@
 import { CommonActions, useNavigation } from '@react-navigation/native'
-import axios from 'axios'
 import React, { useState } from 'react'
 import { Image, KeyboardAvoidingView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { useDispatch } from 'react-redux'
-import { configEnv } from '../api/@config'
 import { login } from '../api/login'
 import { color } from '../assets/color'
 import { fontSize, height, width } from '../assets/size'
-import { loginSuccess, Token } from '../redux/action/auth'
+import { loginSuccess } from '../redux/action/auth'
 
 const AuthScreen = () => {
   const navigation = useNavigation()
@@ -15,12 +13,12 @@ const AuthScreen = () => {
   const [userName, setUserName] = useState('lalala123')
   const [pass, setPass] = useState('1q2w3E*')
   const [errorMessage, setErrorMessage] = useState('')
+  const [seePass, setSeePass] = useState(false)
 
   const loginApi = async () => {
 
     try {
       const res: any = await login({ username: userName, password: pass })
-      console.log('resr', res)
       const payload = {
         access_token: res.data.access_token,
         token_type: res.data.token_type,
@@ -28,7 +26,6 @@ const AuthScreen = () => {
         expires_in: res.data.expires_in,
         scope: res.data.scope
       }
-      console.log('keytest', payload)
       dispatch(loginSuccess(payload))
       navigation.dispatch(
         CommonActions.navigate({
@@ -57,14 +54,23 @@ const AuthScreen = () => {
           value={userName}
           onChangeText={(value: string) => setUserName(value)}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Mật khẩu"
-          value={pass}
-          onChangeText={(value: string) => setPass(value)}
-        />
+        <View style={styles.inputPass}>
+          <TextInput
+            secureTextEntry={seePass}
+            placeholder="Mật khẩu"
+            value={pass}
+            onChangeText={(value: string) => setPass(value)}
+            style={{ flex: 1 }}
+          />
+          <TouchableOpacity onPress={() => setSeePass(!seePass)}>
+            <Image source={require('../assets/icon/eye.png')} style={styles.iconEye} />
+
+          </TouchableOpacity>
+        </View>
+
         <Text style={styles.errMess}>{errorMessage}</Text>
-        <TouchableOpacity onPress={() => loginApi()}
+        <TouchableOpacity
+          onPress={() => loginApi()}
           style={styles.button}
         >
           <Text style={styles.buttonTitle}>Đăng nhập</Text>
@@ -96,6 +102,15 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginBottom: 10
   },
+  inputPass: {
+    backgroundColor: 'white',
+    width: width.button,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
   button: {
     paddingHorizontal: 30,
     paddingVertical: 5,
@@ -116,6 +131,11 @@ const styles = StyleSheet.create({
   errMess: {
     fontSize: fontSize.tag,
     color: 'red'
+  },
+  iconEye: {
+    width: 30,
+    height: 30,
+    tintColor: 'grey'
   }
 })
 
