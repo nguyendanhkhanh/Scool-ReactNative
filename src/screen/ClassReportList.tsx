@@ -20,7 +20,6 @@ const ClassReportList = () => {
   const dispatch = useDispatch()
   const dcpReport = useSelector((state: RootState) => state.mistake)
   const listRegulationApi = useSelector((state: RootState) => state.regulation)
-  const listCriteria = useSelector((state: RootState) => state.criteria)
   const navigation = useNavigation()
   const route = useRoute()
   const classInfo: any = route.params
@@ -33,7 +32,6 @@ const ClassReportList = () => {
       relatedStudentIds: item.relatedStudentIds
     }
   })
-  console.log('keytest1', faultsClass, faultsClass.faults, faultsInfo)
   const listPointOfFault = faultsInfo.map((item: FaultInfo) => {
     return item.point * item.relatedStudentIds.length
   })
@@ -91,7 +89,25 @@ const ClassReportList = () => {
           {faultsInfo?.map((item: FaultInfo, index: number) => _renderMistake(item, index))}
         </View>
         <View style={styles.footerContainer}>
-
+          <TouchableOpacity
+            onPress={() => navigation.dispatch(
+              CommonActions.navigate({
+                name: 'HomeScreen',
+              })
+            )}
+            style={[mainStyle.buttonContainer, styles.buttonDone]}>
+            <Text style={mainStyle.buttonTitle}>Xong</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.dispatch(
+              CommonActions.navigate({
+                name: 'MistakeCreate',
+                params: classInfo
+              })
+            )}
+            style={[mainStyle.buttonContainer, styles.buttonAdd]}>
+            <Text style={mainStyle.buttonTitle}>Thêm vi phạm</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView >

@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react'
 import ClassReportList from '../screen/ClassReportList';
 import HomeScreen from '../screen/HomeScreen';
+import LrReport from '../screen/LrReport';
 import MistakeCreate from '../screen/MistakeCreate';
 import MistakeDetail from '../screen/MistakeDetail';
 import ReportInfo from '../screen/ReportInfo';
@@ -28,6 +29,7 @@ const AppStack = () => {
       {_renderItemScreen('ClassReportList', ClassReportList)}
       {_renderItemScreen('MistakeCreate', MistakeCreate)}
       {_renderItemScreen('MistakeDetail', MistakeDetail)}
+      {_renderItemScreen('LrReport', LrReport)}
     </Stack.Navigator>
   )
 }

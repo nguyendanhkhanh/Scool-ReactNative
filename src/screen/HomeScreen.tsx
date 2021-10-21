@@ -1,6 +1,6 @@
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, Image, StyleSheet, Text, TextInput, TouchableOpacity, View, FlatList, Alert, useWindowDimensions } from 'react-native'
+import { Alert, FlatList, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { getClass } from '../api/class'
 import { getCriteria, getRegulation } from '../api/mistake'
@@ -32,7 +32,8 @@ const HomeScreen = () => {
     try {
       const res: any = await getClass();
       setListClass(res.data.items)
-
+      setClasses(res.data.items)
+      addListClassMistake(res.data.items)
     } catch (err) {
       Alert.alert("Error")
     }
@@ -59,9 +60,12 @@ const HomeScreen = () => {
   }
 
   const addListClassMistake = (listClass: Class[]) => {
-    console.log('keytest', dcpReport, dcpReport.dcpClassReports.length)
     if (dcpReport.dcpClassReports.length > 0) return
-
+    const listClassMistake = listClass.map(item => {
+      return {
+        classId: item.id,
+        faults: [] as Faults[]
+      }
     })
     const dcpClassReports = {
       dcpClassReports: listClassMistake

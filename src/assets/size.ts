@@ -10,7 +10,7 @@ export const width = {
 
 export const fontSize = {
     title: 20,
-    content: 18,
+    content: 17,
     tag: 13,
     contentSmall: 16
 }

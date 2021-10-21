@@ -8,7 +8,7 @@ import { fontSize, widthDevice } from '../assets/size'
 import Header from '../component/Header'
 import { Class } from '../model/Class'
 import { RootState } from '../redux/reducer'
-import { DcpClassesReport } from '../redux/reducer/mistake'
+import { DcpClassesReport, Faults } from '../redux/reducer/mistake'
 import { mainStyle } from './mainStyle'
 
 interface Props {
@@ -18,6 +18,7 @@ interface Props {
 const ReportInfo = (props: Props) => {
   const dcpReport = useSelector((state: RootState) => state.mistake)
   const listClassReport = dcpReport.dcpClassReports
+  const listRegulationApi = useSelector((state: RootState) => state.regulation)
   const listClassReportApi = listClassReport.filter(item => item.faults.length > 0)
   const [listClass, setListClass] = useState<Class[]>([])
   useEffect(() => {
@@ -35,9 +36,18 @@ const ReportInfo = (props: Props) => {
   }
 
   const _renderClass = (item: DcpClassesReport, index: number) => {
+
     const className = listClass.find(classItem => classItem.id === item.classId)?.name
-    const totalFault = item.faults.length
-    const totalPoint = item.faults.reduce(((acc, cur) => acc + cur.point), 0)
+    const faultsInfo = item.faults.map((item: Faults) => {
+      const faultInfo = listRegulationApi.find(fault => fault.id === item.regulationId)
+      return {
+        regulationName: faultInfo?.name,
+        point: faultInfo?.point,
+        relatedStudentIds: item.relatedStudentIds
+      }
+    })
+    const totalFault = faultsInfo.length
+    const totalPoint = faultsInfo.reduce(((acc, cur) => acc + cur.point), 0)
     return (
       <View style={styles.itemContainer} key={index}>
         <View style={styles.itemClassContainer}>
@@ -82,7 +92,11 @@ const ReportInfo = (props: Props) => {
         <View>
           {listClassReportApi.map((item, index) => _renderClass(item, index))}
         </View>
-
+        <TouchableOpacity
+          onPress={() => createDcpReport()}
+          style={[mainStyle.buttonContainer, styles.buttonAdd]}>
+          <Text style={mainStyle.buttonTitle}>Gửi phiếu chấm</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   )

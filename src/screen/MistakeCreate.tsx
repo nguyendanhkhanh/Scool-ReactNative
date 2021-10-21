@@ -38,20 +38,21 @@ const MistakeCreate = () => {
     initStudent()
   }, [])
 
-  // useEffect(() => {
-  //   if (modalType === TYPE_PICKER.CRITERIA) setListPicker(listCriteria)
-  //   if (modalType === TYPE_PICKER.REGULATION && criteria !== '') {
-  //     const listRegulation = listRegulationApi.filter(item => item.criteriaId === criteria)
-  //     setListPicker(listRegulation)
-  //   }
-  //   if (modalType == TYPE_PICKER.STUDENT) setListPicker(listStudent)
-  //   if (modalType === null) setListPicker([])
-  // }, [modalType])
+  useEffect(() => {
+    if (modalType === TYPE_PICKER.CRITERIA) setListPicker(listCriteria)
+    if (modalType === TYPE_PICKER.REGULATION && criteria !== '') {
+      const listRegulation = listRegulationApi.filter(item => item.criteriaId === criteria)
+      setListPicker(listRegulation)
+    }
+    if (modalType == TYPE_PICKER.STUDENT) setListPicker(listStudent)
+    if (modalType === null) setListPicker([])
+  }, [modalType])
 
   useEffect(() => {
     if (criteria === '') setListRegulation([])
     else setListRegulation(listRegulationApi.filter(item => item.criteriaId === criteria))
   }, [criteria])
+
 
   const initStudent = async () => {
     try {
@@ -174,9 +175,56 @@ const MistakeCreate = () => {
       <Header title="Thêm vi phạm" />
       <View style={styles.mainContainer}>
         <View style={styles.contentContainer}>
+          <MultiSelect
+            fixedHeight
+            single
+            styleMainWrapper={styles.criteria}
+            items={listCriteria}
+            uniqueKey='id'
+            onSelectedItemsChange={onSelectCriteria}
+            selectedItems={[criteria]}
+            selectText='Tiêu chí'
+            searchInputPlaceholderText='Tên tiêu chí'
+            styleTextDropdown={styles.criteriaName}
+            styleTextDropdownSelected={styles.criteriaName}
+            onChangeInput={(text) => console.warn(text)}
+            tagRemoveIconColor='gray'
+            tagBorderColor='gray'
+            tagTextColor='black'
+            selectedItemTextColor='red'
+            selectedItemIconColor='red'
+            itemTextColor='#000'
+            displayKey='name'
+            submitButtonColor='#CCC'
+            submitButtonText='Submit'
+            searchInputStyle={{ fontSize: fontSize.contentSmall }}
+          />
 
-
-
+          <MultiSelect
+            fixedHeight
+            single
+            styleMainWrapper={styles.criteria}
+            items={listRegulation}
+            uniqueKey='id'
+            onSelectedItemsChange={onSelectRegulation}
+            selectedItems={[regulation]}
+            selectText='Tên vi phạm'
+            searchInputPlaceholderText='Tên vi phạm'
+            noItemsText='Vui lòng chọn tiêu chí'
+            styleTextDropdown={styles.criteriaName}
+            styleTextDropdownSelected={styles.criteriaName}
+            onChangeInput={(text) => console.warn(text)}
+            tagRemoveIconColor='gray'
+            tagBorderColor='gray'
+            tagTextColor='black'
+            selectedItemTextColor='red'
+            selectedItemIconColor='red'
+            itemTextColor='#000'
+            displayKey='name'
+            submitButtonColor='#CCC'
+            submitButtonText='Submit'
+            searchInputStyle={{ fontSize: fontSize.contentSmall }}
+          />
 
           {/* <View style={styles.studentContainer}> */}
           {/* <TouchableOpacity
