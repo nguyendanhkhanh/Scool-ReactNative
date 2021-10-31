@@ -1,12 +1,42 @@
 import { CommonActions, useNavigation } from '@react-navigation/native'
-import React from 'react'
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Alert, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import MultiSelect from 'react-native-multiple-select'
+import { getClass } from '../api/class'
 import { color } from '../assets/color'
 import { fontSize } from '../assets/size'
 import HeaderHome from '../component/HeaderMain'
+import { Class } from '../model/Class'
 
 const HomeScreen = () => {
   const navigation = useNavigation()
+  const [classId, setClassId] = useState('')
+  const [listClass, setListClass] = useState<Class[]>([])
+
+  useEffect(() => {
+    initClass()
+  }, [])
+
+  useEffect(() => {
+    if (listClass.length > 0) {
+      setClassId(listClass[0].id)
+    }
+  }, [listClass])
+
+  const initClass = async () => {
+    try {
+      const res: any = await getClass();
+      setListClass(res.data.items)
+    } catch (err) {
+      Alert.alert("Error", "Can not get list class")
+      console.log(err)
+    }
+  }
+
+  const onSelectClass = (e: any) => {
+    setClassId(e[0])
+    console.log('keytest', e[0])
+  }
 
   const _renderItem = () => {
     return (
@@ -47,6 +77,30 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <HeaderHome title="Thành tích" />
+      <MultiSelect
+        fixedHeight
+        single
+        // styleMainWrapper={styles.class}
+        items={listClass}
+        uniqueKey='id'
+        onSelectedItemsChange={onSelectClass}
+        selectedItems={[classId]}
+        selectText='Lớp'
+        searchInputPlaceholderText='Chọn lớp chấm điểm'
+        styleTextDropdown={styles.className}
+        styleTextDropdownSelected={styles.className}
+        onChangeInput={(text) => console.warn(text)}
+        tagRemoveIconColor='gray'
+        tagBorderColor='gray'
+        tagTextColor='black'
+        selectedItemTextColor='red'
+        selectedItemIconColor='red'
+        itemTextColor='#000'
+        displayKey='name'
+        submitButtonColor='#CCC'
+        submitButtonText='Submit'
+        searchInputStyle={{ fontSize: fontSize.contentSmall }}
+      />
       <ScrollView>
         {_renderItem()}
         {_renderItem()}
@@ -57,6 +111,7 @@ const HomeScreen = () => {
         <TouchableOpacity onPress={() => navigation.dispatch(
           CommonActions.navigate({
             name: 'LrReport',
+            params: { classId: classId }
           })
         )}>
           <Image source={require('../assets/icon/plus.png')} style={styles.iconAdd} />
@@ -68,7 +123,8 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: color.background
   },
   iconRemove: {
     tintColor: 'gray',
@@ -126,7 +182,14 @@ const styles = StyleSheet.create({
     width: 55,
     height: 55,
     margin: 30
-  }
+  },
+  className: {
+    fontSize: fontSize.contentSmall,
+    fontWeight: 'bold',
+    color: 'black',
+    marginTop: 0,
+    marginLeft: '10%'
+  },
 });
 
 export default HomeScreen

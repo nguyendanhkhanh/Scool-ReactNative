@@ -1,4 +1,4 @@
-import { CommonActions, useNavigation } from '@react-navigation/native'
+import { CommonActions, useNavigation, useRoute } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { color } from '../assets/color'
@@ -8,6 +8,7 @@ import { mainStyle } from './mainStyle'
 
 const LrReport = () => {
   const navigation = useNavigation()
+  const route = useRoute()
   const [point, setPoint] = useState('')
   const [absent, setAbsent] = useState('')
 

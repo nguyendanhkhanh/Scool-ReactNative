@@ -51,7 +51,8 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: color.background
   },
   iconRemove: {
     tintColor: 'gray',

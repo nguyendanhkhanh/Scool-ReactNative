@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-around',
-    backgroundColor: color.blue
+    backgroundColor: color.blue,
   },
   logo: {
     tintColor: 'black',

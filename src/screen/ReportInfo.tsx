@@ -74,7 +74,6 @@ const ReportInfo = (props: Props) => {
 
   const createDcpReport = async () => {
     dcpReport.dcpClassReports = listClassReportApi
-    console.log('keytest', dcpReport)
     try {
       const res = await postDcpReport(dcpReport)
       console.log('res', res)
