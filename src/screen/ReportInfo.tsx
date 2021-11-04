@@ -1,12 +1,14 @@
+import { CommonActions, useNavigation } from '@react-navigation/native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getClass } from '../api/class'
 import { postDcpReport } from '../api/mistake'
 import { color } from '../assets/color'
 import { fontSize, widthDevice } from '../assets/size'
 import Header from '../component/Header'
 import { Class } from '../model/Class'
+import { addClassMistake } from '../redux/action/mistake'
 import { RootState } from '../redux/reducer'
 import { DcpClassesReport, Faults } from '../redux/reducer/mistake'
 import { mainStyle } from './mainStyle'
@@ -16,6 +18,9 @@ interface Props {
 }
 
 const ReportInfo = (props: Props) => {
+  const navigation = useNavigation()
+  const dispatch = useDispatch()
+
   const dcpReport = useSelector((state: RootState) => state.mistake)
   const listClassReport = dcpReport.dcpClassReports
   const listRegulationApi = useSelector((state: RootState) => state.regulation)
@@ -34,10 +39,22 @@ const ReportInfo = (props: Props) => {
       console.log(err)
     }
   }
+  const deleteClass = (index: number) => {
+    const newListClassReport: DcpClassesReport[] = JSON.parse(JSON.stringify(listClassReport))
+    newListClassReport[index].faults = []
+    dcpReport.dcpClassReports = newListClassReport
+    dispatch(addClassMistake(dcpReport))
+    navigation.dispatch(
+      CommonActions.navigate({
+        name: 'HomeScreen',
+      })
+    )
+  }
 
   const _renderClass = (item: DcpClassesReport, index: number) => {
 
-    const className = listClass.find(classItem => classItem.id === item.classId)?.name
+    const classInfo = listClass.find(classItem => classItem.id === item.classId)
+    const className: any = classInfo?.name
     const faultsInfo = item.faults.map((item: Faults) => {
       const faultInfo = listRegulationApi.find(fault => fault.id === item.regulationId)
       return {
@@ -47,9 +64,16 @@ const ReportInfo = (props: Props) => {
       }
     })
     const totalFault = faultsInfo.length
-    const totalPoint = faultsInfo.reduce(((acc, cur) => acc + cur.point), 0)
+    const totalPoint = faultsInfo.reduce(((acc, cur) => acc + cur.point * cur.relatedStudentIds.length), 0)
     return (
-      <View style={styles.itemContainer} key={index}>
+      <TouchableOpacity style={styles.itemContainer} key={index}
+        onPress={() => navigation.dispatch(
+          CommonActions.navigate({
+            name: 'ClassReportList',
+            params: classInfo
+          })
+        )}
+      >
         <View style={styles.itemClassContainer}>
           <Text style={styles.itemClassName}>{className ? className : "Lớp"}</Text>
         </View>
@@ -64,16 +88,15 @@ const ReportInfo = (props: Props) => {
           </Text>
         </View>
         <View style={styles.iconRemoveContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => deleteClass(index)}>
             <Image source={require('../assets/icon/remove.png')} style={styles.iconRemove} />
           </TouchableOpacity>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 
   const createDcpReport = async () => {
-    dcpReport.dcpClassReports = listClassReportApi
     try {
       const res = await postDcpReport(dcpReport)
       console.log('res', res)
@@ -81,7 +104,6 @@ const ReportInfo = (props: Props) => {
     catch (err) {
       console.log('errs', err, err.response)
     }
-
   }
 
   return (

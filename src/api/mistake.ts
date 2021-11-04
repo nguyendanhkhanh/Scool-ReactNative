@@ -20,7 +20,7 @@ export const getStudent = async (classId: string) => {
 }
 
 export const postDcpReport = async (params: DcpReport) => {
-    const endpoint = `​/api​/app​/dcp-reports`
+    const endpoint = `​/api/app/dcp-reports`
     const axios = await getApiService()
     return axios.post(endpoint, params)
 }

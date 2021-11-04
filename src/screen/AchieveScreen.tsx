@@ -77,30 +77,6 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <HeaderHome title="Thành tích" />
-      <MultiSelect
-        fixedHeight
-        single
-        // styleMainWrapper={styles.class}
-        items={listClass}
-        uniqueKey='id'
-        onSelectedItemsChange={onSelectClass}
-        selectedItems={[classId]}
-        selectText='Lớp'
-        searchInputPlaceholderText='Chọn lớp chấm điểm'
-        styleTextDropdown={styles.className}
-        styleTextDropdownSelected={styles.className}
-        onChangeInput={(text) => console.warn(text)}
-        tagRemoveIconColor='gray'
-        tagBorderColor='gray'
-        tagTextColor='black'
-        selectedItemTextColor='red'
-        selectedItemIconColor='red'
-        itemTextColor='#000'
-        displayKey='name'
-        submitButtonColor='#CCC'
-        submitButtonText='Submit'
-        searchInputStyle={{ fontSize: fontSize.contentSmall }}
-      />
       <ScrollView>
         {_renderItem()}
         {_renderItem()}

@@ -10,7 +10,7 @@ import { RootState } from '../redux/reducer'
 import { DcpClassesReport, DcpReport, Faults } from '../redux/reducer/mistake'
 import { mainStyle } from './mainStyle'
 
-interface FaultInfo  {
+interface FaultInfo {
   regulationName: string,
   point: number,
   relatedStudentIds: string[],
@@ -29,6 +29,7 @@ const ClassReportList = () => {
     return {
       regulationName: faultInfo?.name,
       point: faultInfo?.point,
+      regulationId: item.regulationId,
       relatedStudentIds: item.relatedStudentIds
     }
   })
@@ -63,7 +64,7 @@ const ClassReportList = () => {
         )}
         style={styles.item} key={index}>
         <View style={styles.itemPoint}>
-          <Text style={styles.point}>{`- ${item.point}`}</Text>
+          <Text style={styles.point}>{`- ${item.point * item.relatedStudentIds.length}`}</Text>
         </View>
         <View style={styles.itemContent}>
           <Text style={styles.content}>{item.regulationName}</Text>
