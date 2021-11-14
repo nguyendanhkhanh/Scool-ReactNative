@@ -1,15 +1,87 @@
 import { useNavigation } from '@react-navigation/native'
-import React from 'react'
-import { SafeAreaView, ScrollView, StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native'
+import moment from 'moment'
+import React, { useEffect, useState } from 'react'
+import { SafeAreaView, ScrollView, StyleSheet, View, Text, TouchableOpacity, Image, TextInput } from 'react-native'
+import DatePicker from 'react-native-date-picker'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
+import { getAllDcpReports } from '../api/mistake'
 import { color } from '../assets/color'
-import { fontSize } from '../assets/size'
+import { fontSize, widthDevice } from '../assets/size'
 import HeaderHome from '../component/HeaderMain'
+import usePagingInfo from '../ultil/usePagingInfo'
 
 const HomeScreen = () => {
   const navigation = useNavigation()
+  const [dateFromPicker, setDateFromPicker] = useState(false)
+  const [dateToPicker, setDateToPicker] = useState(false)
+  const [datePicker, setDatePicker] = useState(false)
+  const [listDcpReport, setListDcpReport] = useState([])
 
-  const _renderItem = () => {
+  const { pagingInfo, setPageIndex, setFilter } = usePagingInfo({
+    filter: [
+      {
+        key: 'Status',
+        comparison: '',
+        value: 'Approved'
+      },
+      {
+        key: 'Status',
+        comparison: '',
+        value: 'Rejected'
+      },
+      {
+        key: 'StartDate',
+        comparison: '==',
+        value: moment().format('MM/DD/YYYY')
+      },
+      {
+        key: 'EndDate',
+        comparison: '!=',
+        value: moment().add(10, 'days').calendar()
+      }
+    ]
+  });
+
+  useEffect(() => {
+    getHistoryDcpReports()
+  }, [pagingInfo])
+
+  const getHistoryDcpReports = async () => {
+    const input = {
+      pageIndex: 1,
+      pageSize: 10,
+      sortName: '',
+      filter: pagingInfo.filter
+    }
+    const res = await getAllDcpReports(input)
+    setListDcpReport(res.data)
+  }
+
+  const _renderDatePicker = () => {
+    return (
+      <View style={styles.dateContainer}>
+        <TouchableOpacity onPress={() => setDateFromPicker(true)}>
+          <TextInput
+            value={pagingInfo.filter ? pagingInfo.filter[2].value.toString() : ''}
+            editable={false}
+            style={styles.datePicker}
+            textAlign="center"
+          />
+        </TouchableOpacity>
+        <Text>_______</Text>
+        <TouchableOpacity onPress={() => setDateToPicker(true)}>
+          <TextInput
+            value={pagingInfo.filter ? pagingInfo.filter[3].value.toString() : ''}
+            editable={false}
+            style={styles.datePicker}
+            textAlign="center"
+          />
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  const _renderItem = (item: any) => {
     return (
       <View style={styles.itemContainer}>
         <View style={styles.infoContainer}>
@@ -39,11 +111,41 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <HeaderHome title="Lịch sử chấm" />
+      {_renderDatePicker()}
+      <DatePicker
+        modal
+        open={dateFromPicker}
+        date={new Date()}
+        onConfirm={(date) => {
+          setFilter({
+            key: 'StartDate',
+            comparison: '==',
+            value: moment(date).format('MM/DD/YYYY')
+          });
+          setDateFromPicker(false)
+        }}
+        onCancel={() => {
+          setDateFromPicker(false)
+        }}
+      />
+      <DatePicker
+        modal
+        open={dateToPicker}
+        date={new Date()}
+        onConfirm={(date) => {
+          setFilter({
+            key: 'EndDate',
+            comparison: '==',
+            value: moment(date).format('MM/DD/YYYY')
+          });
+          setDateToPicker(false)
+        }}
+        onCancel={() => {
+          setDateToPicker(false)
+        }}
+      />
       <ScrollView>
-        {_renderItem()}
-        {_renderItem()}
-        {_renderItem()}
-        {_renderItem()}
+        {listDcpReport.map(item => _renderItem(item))}
       </ScrollView>
     </SafeAreaView>
   )
@@ -102,6 +204,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     alignItems: 'center',
+  },
+  dateContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: '10%',
+    alignItems: 'center',
+    marginTop: 20
+  },
+  datePicker: {
+    color: 'black',
+    backgroundColor: 'white',
+    height: 40,
+    borderColor: color.border,
+    borderWidth: 1,
+    width: widthDevice * 30 / 100,
+    borderRadius: 3
   }
 });
 
