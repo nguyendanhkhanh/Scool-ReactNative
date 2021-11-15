@@ -98,8 +98,15 @@ const ReportInfo = (props: Props) => {
 
   const createDcpReport = async () => {
     try {
+      console.log(dcpReport)
+      console.log(JSON.stringify(dcpReport))
       const res = await postDcpReport(dcpReport)
-      console.log('res', res)
+      Alert.alert("Success", "Create DcpReport success")
+      navigation.dispatch(
+        CommonActions.navigate({
+          name: 'HomeScreen',
+        })
+      )
     }
     catch (err) {
       console.log('errs', err, err.response)

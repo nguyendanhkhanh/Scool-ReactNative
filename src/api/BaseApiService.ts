@@ -1,5 +1,5 @@
 import axios, { Axios } from 'axios';
-import { store } from '../redux/store/stote';
+import { store } from '../redux/store/store';
 import { configEnv } from './@config';
 import { configHttpRequest, configHttpResponse } from './@helper/network/interceptors';
 
@@ -16,14 +16,15 @@ export const getApiService = async () => {
 
   // get token from store
   const { 
-    auth: { token }
+    auth: { token1 }
   } = store.getState();
 
   // TODO: auto get access_token when expired 
+  const token = store.getState().auth.access_token;
 
   const axiosConfig = axios.create({
     baseURL: baseUrl,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
     withCredentials: true,
   });
 

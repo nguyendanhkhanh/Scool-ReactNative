@@ -20,14 +20,14 @@ export const getStudent = async (classId: string) => {
 }
 
 export const postDcpReport = async (params: DcpReport) => {
-    const endpoint = `​/api/app/dcp-reports`
+    const endpoint = `api/app/dcp-reports`
     const axios = await getApiService()
     return axios.post(endpoint, params)
 }
 
 export const getAllDcpReports = async (input: any) => {
     try {
-        const endpoint = `/api/app/dcp-reports/paging`
+        const endpoint = `api/app/dcp-reports/paging`
         const apiService = await getApiService();
         const result = await apiService.post(endpoint, input)
         return result;
